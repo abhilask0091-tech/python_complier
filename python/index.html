@@ -1,145 +1,50 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#1e1e1e">
-  <title>PyStudio — Python Playground</title>
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f7f8fc"><title>PyLab — Python Notebook</title>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <style>
-    :root { color-scheme: dark; font-family: "Segoe UI", Inter, system-ui, sans-serif; background: #1e1e1e; color: #d4d4d4; }
-    * { box-sizing: border-box; }
-    body { margin: 0; min-width: 320px; height: 100vh; overflow: hidden; }
-    button { font: inherit; cursor: pointer; }
-    .app { height: 100%; display: grid; grid-template-rows: 36px 1fr 24px; }
-    .titlebar { background: #181818; display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid #111; color: #aaa; font-size: 12px; }
-    .title-brand { position: absolute; left: 13px; display: flex; align-items: center; gap: 8px; color: #ddd; font-weight: 600; }
-    .py-mark { display: grid; place-items: center; width: 19px; height: 19px; background: #f2c94c; border-radius: 5px; color: #222; font-size: 11px; font-weight: 800; }
-    .title-center { opacity: .82; }
-    .main { min-height: 0; display: grid; grid-template-columns: 48px 210px minmax(0,1fr); }
-    .activity { background: #181818; border-right: 1px solid #292929; display: flex; flex-direction: column; align-items: center; padding-top: 10px; gap: 5px; }
-    .activity button { width: 46px; height: 45px; color: #858585; background: transparent; border: 0; border-left: 2px solid transparent; font-size: 19px; }
-    .activity button.active { color: #fff; border-left-color: #fff; }
-    .explorer { background: #181818; border-right: 1px solid #292929; padding: 16px 11px; font-size: 12px; }
-    .explorer-heading { display: flex; align-items: center; justify-content: space-between; margin: 0 6px 17px; color: #bbb; font-size: 11px; letter-spacing: .06em; }
-    .folder { font-weight: 700; font-size: 11px; color: #ddd; margin: 0 0 9px 4px; }
-    .file { height: 27px; display: flex; align-items: center; gap: 8px; padding: 0 8px; border-radius: 4px; color: #e2e2e2; }
-    .file.selected { background: #37373d; }
-    .file-icon { color: #ffd43b; font-weight: 700; font-size: 11px; }
-    .editor-area { min-width: 0; min-height: 0; display: grid; grid-template-rows: 37px 37px minmax(180px,1fr) 30px minmax(140px, 32%); }
-    .tabs { background: #181818; display: flex; align-items: stretch; border-bottom: 1px solid #252526; }
-    .tab { display: flex; align-items: center; gap: 8px; min-width: 145px; padding: 0 13px; background: #1e1e1e; border-right: 1px solid #252526; border-top: 1px solid #007acc; color: #ddd; font-size: 12px; }
-    .tab-icon { color: #ffd43b; font-weight: 700; }
-    .editor-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 1px solid #252526; color: #999; font-size: 11px; }
-    .crumb { display: flex; gap: 8px; align-items: center; }
-    .run { border: 0; border-radius: 4px; background: #16825d; color: #fff; font-size: 12px; font-weight: 600; padding: 6px 12px; }
-    .run:hover { background: #19976b; } .run:disabled { opacity: .65; cursor: wait; }
-    #editor { min-height: 0; width: 100%; }
-    .panel-heading { display: flex; align-items: center; gap: 18px; padding: 0 16px; border-top: 1px solid #333; border-bottom: 1px solid #333; background: #181818; font-size: 11px; letter-spacing: .04em; color: #aaa; }
-    .panel-heading strong { align-self: stretch; display: flex; align-items: center; border-bottom: 1px solid #eee; color: #ddd; font-weight: 500; }
-    .output-wrap { min-height: 0; position: relative; background: #1e1e1e; }
-    #output { height: 100%; overflow: auto; margin: 0; padding: 12px 17px; color: #d4d4d4; white-space: pre-wrap; overflow-wrap: anywhere; font: 13px/1.65 Consolas, "Cascadia Code", monospace; }
-    #output.empty { color: #777; } #output.error { color: #f48771; }
-    .clear { position: absolute; top: 6px; right: 12px; border: 0; background: transparent; color: #999; font-size: 11px; }
-    .status { background: #087eaa; display: flex; align-items: center; justify-content: space-between; padding: 0 10px; color: #fff; font-size: 11px; }
-    .status-left, .status-right { display: flex; align-items: center; gap: 14px; }
-    #runtime { color: #e5f8ff; }
-    @media(max-width: 760px) { .main { grid-template-columns: 42px minmax(0,1fr); } .explorer { display: none; } .activity button { width: 40px; } .title-center { display: none; } .editor-area { grid-template-rows: 37px 37px minmax(180px,1fr) 30px minmax(140px,36%); } }
+    :root{font-family:Inter,"Segoe UI",system-ui,sans-serif;color:#20243a;background:#f7f8fc;font-synthesis:none}*{box-sizing:border-box}body{margin:0;min-height:100vh}.top{height:66px;background:#fff;border-bottom:1px solid #e9eaf1;display:flex;align-items:center;padding:0 clamp(16px,4vw,54px);gap:14px;position:sticky;top:0;z-index:3}.brand{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:750;letter-spacing:-.04em}.logo{width:35px;height:35px;border-radius:11px;background:linear-gradient(140deg,#5b6ef5,#7e55d9);display:grid;place-items:center;color:white;font-weight:800;font-size:14px;box-shadow:0 5px 13px #625ce64a}.badge{font-size:11px;color:#68708b;background:#f0f1f8;padding:5px 9px;border-radius:999px;font-weight:650}.top-spacer{flex:1}.runtime{font-size:12px;color:#69718a}.status-dot{display:inline-block;width:7px;height:7px;background:#aaa;border-radius:50%;margin-right:6px}.status-dot.ready{background:#35b77b}.top-button,.primary,.soft,.install-btn{border:0;border-radius:9px;padding:9px 13px;font-weight:650;font-size:12px;cursor:pointer;transition:.15s}.top-button,.soft{background:#f0f1f8;color:#444b66}.top-button:hover,.soft:hover{background:#e6e8f2}.primary{background:#615ee9;color:white;box-shadow:0 4px 10px #615ee92b}.primary:hover{background:#514dd9;transform:translateY(-1px)}button:disabled{opacity:.55;cursor:wait;transform:none!important}main{max-width:1040px;margin:0 auto;padding:38px 24px 80px}.intro{margin-bottom:26px}.eyebrow{color:#6662dc;text-transform:uppercase;letter-spacing:.14em;font-size:10px;font-weight:800}.intro h1{font-size:clamp(26px,4vw,36px);letter-spacing:-.055em;margin:8px 0 7px}.intro p{margin:0;color:#727990;font-size:14px}.toolbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:16px}.toolbar .spacer{flex:1}.install{display:flex;align-items:center;gap:7px;background:white;border:1px solid #e4e6ef;border-radius:10px;padding:4px 5px 4px 11px}.install input{width:170px;border:0;outline:0;font:12px inherit;color:#343951;background:transparent}.install-btn{background:#242942;color:white;padding:8px 11px}.install-btn:hover{background:#353c5c}.hint{font-size:11px;color:#8890a5;margin-left:2px}.cell{background:#fff;border:1px solid #e7e8f0;border-radius:13px;overflow:hidden;box-shadow:0 5px 20px #25295d08;margin:12px 0}.cell-head{height:43px;display:flex;align-items:center;gap:9px;padding:0 13px;border-bottom:1px solid #eff0f5;color:#717991;font-size:11px}.cell-number{display:grid;place-items:center;width:22px;height:22px;background:#f0efff;color:#5b58df;border-radius:7px;font-size:10px;font-weight:800}.cell-actions{margin-left:auto;display:flex;gap:6px}.icon-btn{height:27px;width:29px;border:0;background:transparent;color:#7c8399;border-radius:6px;cursor:pointer;font-size:14px}.icon-btn:hover{background:#f1f2f8;color:#333951}.run-cell{border:0;background:#eef8f2;color:#228958;border-radius:6px;padding:6px 9px;font-weight:700;font-size:10px;cursor:pointer}.run-cell:hover{background:#dcf3e6}.editor{height:150px;width:100%}.output{display:none;border-top:1px solid #eff0f5;background:#fcfcfe;min-height:43px;padding:12px 17px;color:#38405a;white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.65 "Cascadia Code",Consolas,monospace}.output.visible{display:block}.output.error{color:#bf433d;background:#fffafa}.add-cell{display:flex;justify-content:center;padding:14px}.add-cell button{border:1px dashed #cdd0e0;background:transparent;color:#696f87;border-radius:9px;padding:10px 15px;font-size:12px;font-weight:650;cursor:pointer}.add-cell button:hover{border-color:#7772ed;color:#5c58db;background:#fafaff}.empty-note{text-align:center;color:#8c92a5;padding:23px;font-size:12px}.footer-note{text-align:center;color:#9298aa;font-size:11px;margin-top:26px}.toast{position:fixed;right:20px;bottom:20px;background:#242942;color:white;border-radius:10px;padding:12px 16px;font-size:12px;box-shadow:0 10px 35px #1114;opacity:0;transform:translateY(8px);transition:.2s;pointer-events:none;z-index:5}.toast.show{opacity:1;transform:translateY(0)}kbd{font:inherit;background:#f0f1f6;border:1px solid #e2e4ed;border-radius:4px;padding:1px 4px}.disclaimer{font-size:10px;color:#969bae;margin-top:10px}@media(max-width:600px){.top{height:58px;padding:0 13px}.badge,.runtime{display:none}main{padding:26px 13px 60px}.install input{width:108px}.toolbar .hint{display:none}.editor{height:175px}.top-button{padding:8px}}
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"></script>
 </head>
 <body>
-  <div class="app">
-    <div class="titlebar"><div class="title-brand"><span class="py-mark">Py</span><span>PyStudio</span></div><div class="title-center">python_compiler — Python Playground</div></div>
-    <main class="main">
-      <aside class="activity" aria-label="Activity bar"><button class="active" title="Explorer">▤</button><button title="Search">⌕</button><button title="Extensions">▧</button></aside>
-      <aside class="explorer"><div class="explorer-heading"><span>EXPLORER</span><span>•••</span></div><div class="folder">⌄ &nbsp; PYTHON_COMPILER</div><div class="file selected"><span class="file-icon">Py</span><span>main.py</span></div></aside>
-      <section class="editor-area">
-        <div class="tabs"><div class="tab"><span class="tab-icon">Py</span><span>main.py</span><span>×</span></div></div>
-        <div class="editor-toolbar"><div class="crumb"><span>python_compiler</span><span>›</span><span>main.py</span></div><button class="run" id="run" type="button">▶ &nbsp; Run Python</button></div>
-        <div id="editor" aria-label="Python code editor"></div>
-        <div class="panel-heading"><strong>TERMINAL</strong><span>OUTPUT</span><span id="runtime">Python runtime loads when you run</span></div>
-        <div class="output-wrap"><pre id="output" class="empty"># Run your Python file to see output here.</pre><button class="clear" id="clear" type="button">Clear</button></div>
-      </section>
-    </main>
-    <footer class="status"><div class="status-left"><span>⌁ &nbsp; Ready</span><span id="status-message">Python Playground</span></div><div class="status-right"><span>Ln 1, Col 1</span><span>Spaces: 4</span><span>UTF-8</span><span>Python</span></div></footer>
-  </div>
+  <header class="top"><div class="brand"><span class="logo">Py</span><span>PyLab</span></div><span class="badge">NOTEBOOK</span><div class="top-spacer"></div><span class="runtime"><i class="status-dot" id="status-dot"></i><span id="runtime">Python runtime starts on first run</span></span><button class="top-button" id="save-btn" type="button">Saved locally</button><button class="primary" id="run-all" type="button">▶ &nbsp;Run all</button></header>
+  <main>
+    <section class="intro"><div class="eyebrow">Your browser-based workspace</div><h1>Think it. Code it. Run it.</h1><p>A clean Python notebook with reusable cells, package installs, and instant output.</p></section>
+    <section class="toolbar"><button class="soft" id="add-top" type="button">＋ &nbsp;Code cell</button><button class="soft" id="clear-all" type="button">Clear outputs</button><div class="spacer"></div><label class="install"><span>＋</span><input id="package-name" placeholder="Install package (e.g. numpy)" aria-label="Package name"><button class="install-btn" id="install-btn" type="button">Install</button></label><span class="hint">Pyodide and pure Python packages</span></section>
+    <section id="cells" aria-label="Notebook cells"></section>
+    <div class="add-cell"><button id="add-bottom" type="button">＋ &nbsp;Add a code cell</button></div>
+    <div class="footer-note">Runs in your browser with Pyodide · Use <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to run the selected cell<div class="disclaimer">Packages that require unsupported native system libraries may not install in a browser.</div></div>
+  </main><div class="toast" id="toast"></div>
   <script>
-    const starterCode = `marks = [78, 45, 92, 67, 45, 89, 92, 56, 78]\n\nswaps = 0\nfor i in range(len(marks)):\n    for j in range(len(marks) - 1 - i):\n        if marks[j] > marks[j + 1]:\n            marks[j], marks[j + 1] = marks[j + 1], marks[j]\n            swaps += 1\n\nunique_marks = sorted(set(marks))\nprint("Sorted marks:", marks)\nprint("Unique marks:", unique_marks)\nprint("Second-highest unique mark:", unique_marks[-2])\nprint("Bubble sort swaps:", swaps)`;
-    const output = document.querySelector('#output');
-    const runButton = document.querySelector('#run');
-    const runtimeLabel = document.querySelector('#runtime');
-    const statusMessage = document.querySelector('#status-message');
-    let pyodidePromise;
-    let editor;
-
-    window.MonacoEnvironment = { getWorkerUrl: () => 'data:text/javascript;charset=utf-8,' + encodeURIComponent(`self.MonacoEnvironment={baseUrl:'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/'};importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/base/worker/workerMain.js');`) };
-    require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs' } });
-    require(['vs/editor/editor.main'], () => {
-      editor = monaco.editor.create(document.querySelector('#editor'), {
-        value: starterCode, language: 'python', theme: 'vs-dark', automaticLayout: true,
-        fontFamily: 'Consolas, "Cascadia Code", monospace', fontSize: 14, lineHeight: 22,
-        minimap: { enabled: false }, padding: { top: 13 }, scrollBeyondLastLine: false,
-        roundedSelection: false, renderLineHighlight: 'line', tabSize: 4,
-        suggestOnTriggerCharacters: true, wordBasedSuggestions: 'currentDocument'
-      });
-      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => runButton.click());
-      editor.onDidChangeCursorPosition(({ position }) => {
-        document.querySelector('.status-right span').textContent = `Ln ${position.lineNumber}, Col ${position.column}`;
-      });
-      statusMessage.textContent = 'Editor ready';
-    });
-
-    async function getRuntime() {
-      if (!pyodidePromise) {
-        runtimeLabel.textContent = 'Loading Python…';
-        pyodidePromise = (async () => {
-          const { loadPyodide } = await import('https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.mjs');
-          return loadPyodide();
-        })();
-      }
-      return pyodidePromise;
+    const container=document.querySelector('#cells'),runtimeLabel=document.querySelector('#runtime'),dot=document.querySelector('#status-dot'),toast=document.querySelector('#toast');
+    const editors=new Map();let pyodidePromise=null,cellCounter=0,toastTimer;
+    const saved=(()=>{try{return JSON.parse(localStorage.getItem('pylab-notebook-v2')||'null')}catch{return null}})();
+    const initial=saved?.cells?.length?saved.cells:[{code:'',output:'',error:false}];
+    function notify(message){toast.textContent=message;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2600)}
+    function persist(){const cells=[...container.querySelectorAll('.cell')].map(el=>({code:editors.get(el.dataset.id)?.getValue()||'',output:el.querySelector('.output').textContent,error:el.querySelector('.output').classList.contains('error')}));localStorage.setItem('pylab-notebook-v2',JSON.stringify({cells}));document.querySelector('#save-btn').textContent='Saved locally'}
+    function makeCell(data={code:'',output:'',error:false}){
+      const id=String(++cellCounter),el=document.createElement('article');el.className='cell';el.dataset.id=id;
+      el.innerHTML=`<div class="cell-head"><span class="cell-number"></span><span>Python</span><div class="cell-actions"><button class="run-cell" type="button">▶ Run</button><button class="icon-btn move-up" title="Move cell up" aria-label="Move cell up">↑</button><button class="icon-btn move-down" title="Move cell down" aria-label="Move cell down">↓</button><button class="icon-btn delete-cell" title="Delete cell" aria-label="Delete cell">×</button></div></div><div class="editor"></div><pre class="output"></pre>`;
+      container.append(el);const out=el.querySelector('.output');if(data.output){out.textContent=data.output;out.classList.add('visible');if(data.error)out.classList.add('error')}
+      el.querySelector('.run-cell').addEventListener('click',()=>runCell(el));el.querySelector('.delete-cell').addEventListener('click',()=>{if(container.children.length===1){notify('Keep at least one code cell.');return}editors.get(id)?.dispose();editors.delete(id);el.remove();renumber();persist()});
+      el.querySelector('.move-up').addEventListener('click',()=>{if(el.previousElementSibling){container.insertBefore(el,el.previousElementSibling);renumber();persist()}});el.querySelector('.move-down').addEventListener('click',()=>{if(el.nextElementSibling){container.insertBefore(el.nextElementSibling,el);renumber();persist()}});
+      require(['vs/editor/editor.main'],()=>{const editor=monaco.editor.create(el.querySelector('.editor'),{value:data.code||'',language:'python',theme:'vs',automaticLayout:true,fontFamily:'Consolas,"Cascadia Code",monospace',fontSize:13,lineHeight:20,minimap:{enabled:false},padding:{top:11},scrollBeyondLastLine:false,wordWrap:'on',tabSize:4,renderLineHighlight:'gutter',suggestOnTriggerCharacters:true});editors.set(id,editor);editor.addCommand(monaco.KeyMod.CtrlCmd|monaco.KeyCode.Enter,()=>runCell(el));editor.onDidChangeModelContent(persist);});
+      renumber();return el;
     }
-
-    runButton.addEventListener('click', async () => {
-      if (!editor) { output.textContent = 'Editor is still loading. Please wait a moment and try again.'; output.className = 'error'; return; }
-      runButton.disabled = true;
-      runButton.textContent = 'Running…';
-      statusMessage.textContent = 'Running Python';
-      output.className = '';
-      output.textContent = '';
-      try {
-        const pyodide = await getRuntime();
-        runtimeLabel.textContent = `Python ${pyodide.runPython('import sys; sys.version.split()[0]')}`;
-        let captured = '';
-        pyodide.setStdout({ batched: (line) => { captured += line + '\n'; } });
-        pyodide.setStderr({ batched: (line) => { captured += line + '\n'; } });
-        try {
-          await pyodide.runPythonAsync(editor.getValue());
-          output.textContent = captured.trimEnd() || '(Program finished with no output.)';
-          if (!captured.trim()) output.className = 'empty';
-          statusMessage.textContent = 'Execution complete';
-        } catch (error) {
-          output.textContent = captured + String(error);
-          output.className = 'error';
-          statusMessage.textContent = 'Execution error';
-        }
-      } catch (error) {
-        output.textContent = 'Could not load Python. Check your internet connection and try again.\n\n' + String(error);
-        output.className = 'error';
-        runtimeLabel.textContent = 'Python runtime unavailable';
-        statusMessage.textContent = 'Runtime error';
-      } finally {
-        runButton.disabled = false;
-        runButton.innerHTML = '▶ &nbsp; Run Python';
-      }
-    });
-    document.querySelector('#clear').addEventListener('click', () => {
-      output.textContent = '# Run your Python file to see output here.';
-      output.className = 'empty';
-    });
-    window.addEventListener('resize', () => editor?.layout());
+    function renumber(){[...container.children].forEach((el,i)=>el.querySelector('.cell-number').textContent=`[${i+1}]`)}
+    window.MonacoEnvironment={getWorkerUrl:()=>`data:text/javascript;charset=utf-8,${encodeURIComponent(`self.MonacoEnvironment={baseUrl:'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/'};importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/base/worker/workerMain.js');`)}`};
+    require.config({paths:{vs:'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs'}});
+    initial.forEach(makeCell);
+    async function getRuntime(){if(!pyodidePromise){runtimeLabel.textContent='Loading Python…';pyodidePromise=(async()=>{const{loadPyodide}=await import('https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.mjs');return loadPyodide()})();}const py=await pyodidePromise;runtimeLabel.textContent=`Python ${py.runPython('import sys; sys.version.split()[0]}')`;dot.classList.add('ready');return py}
+    async function runCell(el){const editor=editors.get(el.dataset.id);if(!editor){notify('Editor is loading. Try again in a moment.');return}const button=el.querySelector('.run-cell'),out=el.querySelector('.output');button.disabled=true;button.textContent='Running…';out.className='output visible';out.textContent='';try{const py=await getRuntime();let text='';py.setStdout({batched:line=>text+=line+'\n'});py.setStderr({batched:line=>text+=line+'\n'});try{await py.runPythonAsync(editor.getValue());out.textContent=text.trimEnd()||'(Cell finished with no output.)'}catch(error){out.textContent=text+String(error);out.classList.add('error')}}catch(error){out.textContent='Python could not load. Check your internet connection.\n'+String(error);out.classList.add('error')}finally{button.disabled=false;button.textContent='▶ Run';persist()}}
+    document.querySelector('#add-top').addEventListener('click',()=>{const el=makeCell();el.scrollIntoView({behavior:'smooth',block:'center'});editors.get(el.dataset.id)?.focus();persist()});document.querySelector('#add-bottom').addEventListener('click',()=>document.querySelector('#add-top').click());
+    document.querySelector('#run-all').addEventListener('click',async e=>{const button=e.currentTarget;button.disabled=true;button.textContent='Running…';for(const el of container.querySelectorAll('.cell'))await runCell(el);button.disabled=false;button.innerHTML='▶ &nbsp;Run all'});
+    document.querySelector('#clear-all').addEventListener('click',()=>{container.querySelectorAll('.output').forEach(out=>{out.textContent='';out.className='output'});persist();notify('Cell outputs cleared.')});
+    document.querySelector('#save-btn').addEventListener('click',()=>{persist();notify('Notebook saved in this browser.')});window.addEventListener('resize',()=>editors.forEach(editor=>editor.layout()));
+    document.querySelector('#install-btn').addEventListener('click',async()=>{const input=document.querySelector('#package-name'),name=input.value.trim(),button=document.querySelector('#install-btn');if(!name){notify('Enter a package name first.');input.focus();return}if(!/^[A-Za-z0-9_.-]+$/.test(name)){notify('Enter one valid package name.');return}button.disabled=true;button.textContent='Installing…';try{const py=await getRuntime();await py.loadPackage('micropip');const micropip=py.pyimport('micropip');await micropip.install(name);micropip.destroy();notify(`${name} installed for this session.`);input.value=''}catch(error){notify(`Could not install ${name}. Check browser package support.`);console.error(error)}finally{button.disabled=false;button.textContent='Install'}});
   </script>
 </body>
 </html>

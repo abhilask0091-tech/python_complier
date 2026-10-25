@@ -13,13 +13,20 @@
   <header class="top"><div class="brand"><span class="logo">Py</span><span>PyLab</span></div><span class="badge">NOTEBOOK</span><div class="top-spacer"></div><span class="runtime"><i class="status-dot" id="status-dot"></i><span id="runtime">Python runtime starts on first run</span></span><button class="top-button" id="save-btn" type="button">Saved locally</button><button class="primary" id="run-all" type="button">▶ &nbsp;Run all</button></header>
   <main>
     <section class="intro"><div class="eyebrow">Your browser-based workspace</div><h1>Think it. Code it. Run it.</h1><p>A clean Python notebook with reusable cells, package installs, and instant output.</p></section>
-    <section class="toolbar"><button class="soft" id="add-top" type="button">＋ &nbsp;Code cell</button><button class="soft" id="clear-all" type="button">Clear outputs</button><div class="spacer"></div><label class="install"><span>＋</span><input id="package-name" placeholder="Install package (e.g. numpy)" aria-label="Package name"><button class="install-btn" id="install-btn" type="button">Install</button></label><span class="hint">Pyodide and pure Python packages</span></section>
+    <section class="toolbar"><button class="soft" id="add-top" type="button">＋ &nbsp;Code cell</button><button class="soft" id="clear-all" type="button">Clear outputs</button><div class="spacer"></div><label class="install"><span>＋</span><input id="package-name" list="package-suggestions" placeholder="Search a library, e.g. numpy" aria-label="Package name"><datalist id="package-suggestions"></datalist><button class="install-btn" id="install-btn" type="button">Install</button></label><span class="hint">Type to see Pyodide package suggestions</span></section>
     <section id="cells" aria-label="Notebook cells"></section>
     <div class="add-cell"><button id="add-bottom" type="button">＋ &nbsp;Add a code cell</button></div>
     <div class="footer-note">Runs in your browser with Pyodide · Use <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to run the selected cell<div class="disclaimer">Packages that require unsupported native system libraries may not install in a browser.</div></div>
   </main><div class="toast" id="toast"></div>
   <script>
     const container=document.querySelector('#cells'),runtimeLabel=document.querySelector('#runtime'),dot=document.querySelector('#status-dot'),toast=document.querySelector('#toast');
+    const packageInput=document.querySelector('#package-name'),packageList=document.querySelector('#package-suggestions');
+    let packageNames=['numpy','pandas','matplotlib','scipy','scikit-learn','sympy','pillow','requests','micropip','beautifulsoup4','networkx','regex','pyyaml','dateutil','pytz','seaborn','statsmodels','opencv-python','lxml','rich'];
+    function updatePackageSuggestions(query=''){const q=query.trim().toLowerCase();const names=packageNames.filter(name=>!q||name.toLowerCase().includes(q)).slice(0,35);packageList.replaceChildren(...names.map(name=>{const option=document.createElement('option');option.value=name;return option}))}
+    updatePackageSuggestions();
+    packageInput.addEventListener('input',()=>updatePackageSuggestions(packageInput.value));
+    packageInput.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();document.querySelector('#install-btn').click()}});
+    fetch('https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide-lock.json').then(response=>{if(!response.ok)throw new Error('Package index unavailable');return response.json()}).then(index=>{packageNames=[...new Set([...packageNames,...Object.keys(index.packages||{})])].sort((a,b)=>a.localeCompare(b));updatePackageSuggestions(packageInput.value)}).catch(()=>{});
     const editors=new Map();let pyodidePromise=null,cellCounter=0,toastTimer;
     const saved=(()=>{try{return JSON.parse(localStorage.getItem('pylab-notebook-v2')||'null')}catch{return null}})();
     const initial=saved?.cells?.length?saved.cells:[{code:'',output:'',error:false}];

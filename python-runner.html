@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <title>Python Playground</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0b1020; color: #e5e7eb; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: radial-gradient(ellipse at 15% 0%, #172554 0, transparent 42%), #0b1020; }
+    header { max-width: 1120px; margin: 0 auto; padding: 34px 24px 22px; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 13px; }
+    .logo { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: #facc15; color: #111827; font-size: 24px; font-weight: 900; }
+    h1 { margin: 0; font-size: 22px; letter-spacing: -.04em; }
+    .subtitle { color: #94a3b8; font-size: 13px; margin-top: 3px; }
+    .runtime { font-size: 12px; color: #a7f3d0; background: #064e3b66; border: 1px solid #065f46; border-radius: 999px; padding: 7px 11px; }
+    main { max-width: 1120px; margin: 0 auto; padding: 0 24px 36px; }
+    .toolbar { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: #151c2e; border: 1px solid #263149; border-bottom: 0; border-radius: 14px 14px 0 0; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: #64748b; }
+    .filename { color: #cbd5e1; font-size: 13px; margin-left: 5px; flex: 1; }
+    button { border: 0; border-radius: 9px; padding: 9px 15px; font: inherit; font-weight: 700; cursor: pointer; transition: transform .12s, opacity .12s; }
+    button:hover { transform: translateY(-1px); } button:disabled { opacity: .55; cursor: wait; transform: none; }
+    #run { background: #facc15; color: #111827; } #clear { background: #273449; color: #dbeafe; }
+    .workspace { display: grid; grid-template-columns: 1fr 1fr; min-height: 510px; border: 1px solid #263149; border-radius: 0 0 14px 14px; overflow: hidden; box-shadow: 0 24px 80px #0005; }
+    .pane { min-width: 0; display: flex; flex-direction: column; background: #0f172a; }
+    .pane + .pane { border-left: 1px solid #263149; }
+    .pane-title { padding: 12px 16px; font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: .12em; border-bottom: 1px solid #202b40; }
+    textarea { flex: 1; width: 100%; min-height: 450px; resize: vertical; border: 0; outline: 0; padding: 20px; background: transparent; color: #e2e8f0; font: 14px/1.7 "Cascadia Code", Consolas, "Courier New", monospace; tab-size: 4; white-space: pre; }
+    #output { flex: 1; min-height: 450px; margin: 0; padding: 20px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; color: #cbd5e1; font: 14px/1.7 "Cascadia Code", Consolas, "Courier New", monospace; }
+    #output.error { color: #fca5a5; } #output.empty { color: #64748b; }
+    .foot { display: flex; justify-content: space-between; color: #64748b; font-size: 12px; padding: 13px 2px; }
+    kbd { font: inherit; border: 1px solid #334155; border-radius: 5px; padding: 2px 5px; color: #cbd5e1; }
+    @media (max-width: 720px) { header { padding-top: 22px; } .workspace { grid-template-columns: 1fr; } .pane + .pane { border-left: 0; border-top: 1px solid #263149; } textarea, #output { min-height: 310px; } .runtime { display: none; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand"><div class="logo">Py</div><div><h1>Python Playground</h1><div class="subtitle">Write Python and run it right here</div></div></div>
+    <div class="runtime" id="runtime">Python runtime loads when you run</div>
+  </header>
+  <main>
+    <div class="toolbar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="filename">main.py</span><button id="clear" type="button">Clear output</button><button id="run" type="button">▶ &nbsp;Run code</button></div>
+    <div class="workspace">
+      <section class="pane"><div class="pane-title">Editor</div><textarea id="code" spellcheck="false" aria-label="Python code editor" autocapitalize="off" autocomplete="off">marks = [78, 45, 92, 67, 45, 89, 92, 56, 78]
+
+swaps = 0
+for i in range(len(marks)):
+    for j in range(len(marks) - 1 - i):
+        if marks[j] > marks[j + 1]:
+            marks[j], marks[j + 1] = marks[j + 1], marks[j]
+            swaps += 1
+
+unique_marks = sorted(set(marks))
+print("Sorted marks:", marks)
+print("Unique marks:", unique_marks)
+print("Second-highest unique mark:", unique_marks[-2])
+print("Bubble sort swaps:", swaps)</textarea></section>
+      <section class="pane"><div class="pane-title">Output</div><pre id="output" class="empty">Your program output will appear here.</pre></section>
+    </div>
+    <div class="foot"><span>Runs in your browser with Pyodide</span><span>Shortcut: <kbd>Ctrl</kbd> + <kbd>Enter</kbd></span></div>
+  </main>
+  <script type="module">
+    const code = document.querySelector('#code');
+    const output = document.querySelector('#output');
+    const runButton = document.querySelector('#run');
+    const runtimeLabel = document.querySelector('#runtime');
+    let pyodidePromise;
+
+    async function getRuntime() {
+      if (!pyodidePromise) {
+        runtimeLabel.textContent = 'Loading Python runtime…';
+        pyodidePromise = (async () => {
+          const { loadPyodide } = await import('https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.mjs');
+          return loadPyodide();
+        })();
+      }
+      return pyodidePromise;
+    }
+
+    runButton.addEventListener('click', async () => {
+      runButton.disabled = true;
+      runButton.textContent = 'Running…';
+      output.className = '';
+      output.textContent = '';
+      try {
+        const pyodide = await getRuntime();
+        runtimeLabel.textContent = `Python ${pyodide.runPython('import sys; sys.version.split()[0]')} ready`;
+        let captured = '';
+        pyodide.setStdout({ batched: (line) => { captured += line + '\n'; } });
+        pyodide.setStderr({ batched: (line) => { captured += line + '\n'; } });
+        try {
+          await pyodide.runPythonAsync(code.value);
+          output.textContent = captured.trimEnd() || '(Program finished with no output.)';
+          if (!captured.trim()) output.className = 'empty';
+        } catch (error) {
+          output.textContent = captured + String(error);
+          output.className = 'error';
+        }
+      } catch (error) {
+        output.textContent = 'Could not load Python. Check your internet connection and try again.\n\n' + String(error);
+        output.className = 'error';
+        runtimeLabel.textContent = 'Python runtime unavailable';
+      } finally {
+        runButton.disabled = false;
+        runButton.innerHTML = '▶ &nbsp;Run code';
+      }
+    });
+
+    document.querySelector('#clear').addEventListener('click', () => {
+      output.textContent = 'Your program output will appear here.';
+      output.className = 'empty';
+    });
+    code.addEventListener('keydown', (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+        event.preventDefault();
+        runButton.click();
+      }
+      if (event.key === 'Tab') {
+        event.preventDefault();
+        const start = code.selectionStart;
+        code.setRangeText('    ', start, code.selectionEnd, 'end');
+      }
+    });
+  </script>
+</body>
+</html>

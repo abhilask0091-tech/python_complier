@@ -52,6 +52,7 @@ Open `http://localhost:8000/python/` in your browser. The Worker configuration a
 - When you ask PyLab AI a question, the current notebook's code and text cells are sent with your message to this backend and then to OpenAI to generate a reply. Avoid sending secrets or private data.
 - The backend keeps the API key server-side and asks the API not to store the response. Do not commit secrets or change the frontend to contain an API key.
 - The Worker has a Cloudflare rate limit configured at 10 requests per minute per IP. Cloudflare documents that this limiter is approximate and can vary by location. It is not a hard spending cap, so set an API budget/usage alert in your API account.
-- AI suggestions are shown for review. They are never run automatically; **Add code cell** only inserts a code block into the notebook.
+- Chat suggestions are shown for review; **Add code cell** only inserts a code block into the notebook.
+- If a Python cell fails, PyLab can send the notebook context and error to the Worker. The AI may replace the failed cell and retry it once; inspect the changed code before using it.
 
 If you later change the GitHub Pages origin, update `ALLOWED_ORIGINS` in `wrangler.toml` and deploy the Worker again.

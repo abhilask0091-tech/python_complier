@@ -32,9 +32,9 @@ You need a Cloudflare account and an OpenAI API key with API access. API usage i
    npx wrangler@latest deploy
    ```
 
-   Wrangler prints a URL similar to `https://pylab-python-ai.<your-subdomain>.workers.dev`. Copy that URL.
+   Wrangler prints the deployed Worker URL. This PyLab copy is configured to use `https://pylab-python-ai.pylab-ai.workers.dev`; if you deploy under a different Worker URL, update `AI_BACKEND_URL` in `index.html` and publish the page again.
 
-5. Open the published PyLab page, click **AI Agent**, paste the Worker URL into the URL field, and click **Save URL**. Then ask a question.
+5. Open the published PyLab page and use **AI Agent**. The page calls the configured Worker automatically; no URL needs to be pasted into the UI.
 
 ## Local page preview
 
